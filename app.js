@@ -82,7 +82,6 @@ app.post("/newCuisine", (req, res) => {
 
 // Edit an exsiting cuisine
 app.patch("/editCuisine/:cuisineNumber", (req, res) => {
-    console.log(req.body);
   Cuisine.updateOne(
     { cuisineNumber: req.params.cuisineNumber },
     req.body,
