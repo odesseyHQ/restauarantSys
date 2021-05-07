@@ -62,7 +62,7 @@ const Cuisine = mongoose.model("Cuisine", cuisineSchema); // Creating cuisines c
 // ------------CUISINES------------------
 
 // Create new cuisine
-app.post("/newCuisine", (req, res) => {
+app.post("/cuisine", (req, res) => {
   Cuisine.countDocuments((err, data) => {
     // Returns the count of the existing cuisines inside the collection
     var cuisineCount = 0; // Declaring a new variable to store the current number of cuisines in the collection
@@ -80,8 +80,19 @@ app.post("/newCuisine", (req, res) => {
   });
 });
 
+// Delete all cuisines in the collection
+app.delete("/cuisine", (req, res) => {
+  Cuisine.deleteMany((err) => { // Deleting all documents
+    if (err) {
+        res.send("Success");
+      } else {
+        res.send("Failed");
+      }
+  });
+});
+
 // Edit an exsiting cuisine
-app.patch("/editCuisine/:cuisineNumber", (req, res) => {
+app.patch("/cuisine/:cuisineNumber", (req, res) => {
   Cuisine.updateOne(
     { cuisineNumber: req.params.cuisineNumber },
     req.body,
@@ -98,7 +109,7 @@ app.patch("/editCuisine/:cuisineNumber", (req, res) => {
 // ----------DISHES-----------
 
 // Create new dish
-app.post("/newDish", (req, res) => {
+app.post("/dish", (req, res) => {
   if (req.body.variantCount > 1) {
     // Checking whether there is more then one variant to be added for the dish
     var variants = req.body.variants; // Assigning the array of variants in the request body to a new variable
@@ -130,8 +141,19 @@ app.post("/newDish", (req, res) => {
   });
 });
 
+// Delete all dishes in the collection
+app.delete("/dish", (req, res) => {
+  Dish.deleteMany((err) => { // Deleting all documents
+    if (err) {
+        res.send("Success");
+      } else {
+        res.send("Failed");
+      }
+  });
+});
+
 // Edit an existing dish
-app.patch("/editDish/:dishNumber", (req, res) => {
+app.patch("/dish/:dishNumber", (req, res) => {
   Dish.findOne({ dishNumber: req.params.dishNumber }, (err, dishData) => {
     // Fetching data of the dish corresponding to the dish number specified
     if (req.body.variantCount > 1) {
@@ -163,7 +185,7 @@ app.patch("/editDish/:dishNumber", (req, res) => {
 // ------------MENUS---------
 
 // Create new menu
-app.post("/newMenu", (req, res) => {
+app.post("/menu", (req, res) => {
   Menu.countDocuments((err, data) => {
     // Returns the count of the existing menus inside the collection
     var menuCount = 0; // Declaring a new variable to store the current number of menus in the collection
@@ -181,8 +203,19 @@ app.post("/newMenu", (req, res) => {
   });
 });
 
+// Delete all menus in the collection
+app.delete("/menu", (req, res) => {
+  Menu.deleteMany((err) => { // Deleting all documents
+    if (err) {
+        res.send("Success");
+      } else {
+        res.send("Failed");
+      }
+  });
+});
+
 // Edit an existing menu
-app.patch("/editMenu/:menuNumber", (req, res) => {
+app.patch("/menu/:menuNumber", (req, res) => {
   Menu.findOne({ menuNumber: req.params.menuNumber }, (err, menuData) => {
     // Fetching data of the menu corresponding to the menu number specified
     req.body.dishIds = menuData.dishIds.concat(req.body.dishIds); // Adding the ObjectIds of the new dishes to the existing array of ObjectIds
@@ -200,7 +233,7 @@ app.patch("/editMenu/:menuNumber", (req, res) => {
 // ------------CATALOGS---------
 
 // Create a new catalog
-app.post("/newCatalog", (req, res) => {
+app.post("/catalog", (req, res) => {
   Catalog.countDocuments((err, data) => {
     // Returns the count of the existing catalogs inside the collection
     var catalogCount = 0; // Declaring a new variable to store the current number of catalogs in the collection
@@ -218,8 +251,19 @@ app.post("/newCatalog", (req, res) => {
   });
 });
 
+// Delete all catalogs in the collection
+app.delete("/catalogs", (req, res) => {
+  Catalog.deleteMany((err) => { // Deleting all documents
+    if (err) {
+      res.send("Success");
+    } else {
+      res.send("Failed");
+    }
+  });
+});
+
 // Edit an existing catalog
-app.patch("/editCatalog/:catalogNumber", (req, res) => {
+app.patch("/catalog/:catalogNumber", (req, res) => {
   Catalog.findOne(
     // Fetching data of the catalog corresponding to the catalog number specified
     { catalogNumber: req.params.catalogNumber },
