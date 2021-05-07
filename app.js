@@ -23,7 +23,7 @@ mongoose.connect("mongodb://localhost:27017/RestaurantDB-2", {
 
 // Schematic for the collection of dishes
 const dishSchema = {
-  dishNumber: Number,
+  dishNumber: Number, // Added automatically when creating a new dish
   cuisineId: ObjectId,
   name: String,
   category: String,
@@ -36,20 +36,20 @@ const dishSchema = {
 
 // Schematic for the collection of cuisines
 const cuisineSchema = {
-  cuisineNumber: Number,
+  cuisineNumber: Number, // Added automatically when creating a new cuisine
   cuisineName: String,
 };
 
 // Schematic for the collection of catalogs
 const catalogSchema = {
   hotelName: String,
-  catalogNumber: Number,
+  catalogNumber: Number, // Added automatically when creating a new catalog
   menuIds: Array,
 };
 
 // Schematic for the collection of menus
 const menuSchema = {
-  menuNumber: Number,
+  menuNumber: Number, // Added automatically when creating a new menu
   cuisineId: ObjectId,
   name: String,
   dishIds: Array,
