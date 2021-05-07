@@ -1,0 +1,24 @@
+/* 1 */
+{
+    "_id" : ObjectId("6094105455a43e4960a1e6a9"),
+    "menuNumber" : 1,
+    "dishIds" : [ 
+        ObjectId("609409bc67c87249fcb96142"), 
+        "ObjectId(\"60943d440ee831300c1d7e06\")"
+    ],
+    "cuisineId" : ObjectId("609404d6b286a63ba0d8fd2b"),
+    "name" : "Arabian Delights",
+    "__v" : 0
+}
+
+/* 2 */
+{
+    "_id" : ObjectId("6094481996346b1258a217bf"),
+    "dishIds" : [ 
+        "609409bc67c87249fcb96142"
+    ],
+    "menuNumber" : 2,
+    "cuisineId" : ObjectId("609404d6b286a63ba0d8fd2b"),
+    "name" : "Arabian Delights",
+    "__v" : 0
+}

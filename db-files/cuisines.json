@@ -1,0 +1,39 @@
+/* 1 */
+{
+    "_id" : ObjectId("609404ccb286a63ba0d8fd2a"),
+    "cuisineNumber" : 1,
+    "cuisineName" : "Indian",
+    "__v" : 0
+}
+
+/* 2 */
+{
+    "_id" : ObjectId("609404d6b286a63ba0d8fd2b"),
+    "cuisineNumber" : 2,
+    "cuisineName" : "Arabian",
+    "__v" : 0
+}
+
+/* 3 */
+{
+    "_id" : ObjectId("609404e0b286a63ba0d8fd2c"),
+    "cuisineNumber" : 3,
+    "cuisineName" : "Chinese",
+    "__v" : 0
+}
+
+/* 4 */
+{
+    "_id" : ObjectId("60943c15923778414c4cc3f9"),
+    "cuisineNumber" : 4,
+    "cuisineName" : "Mexican Specials",
+    "__v" : 0
+}
+
+/* 5 */
+{
+    "_id" : ObjectId("6094ec88319e383934a2ce03"),
+    "cuisineName" : "Turkish Magic",
+    "cuisineNumber" : 5,
+    "__v" : 0
+}

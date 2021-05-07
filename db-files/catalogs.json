@@ -1,0 +1,11 @@
+/* 1 */
+{
+  "_id": ObjectId("609414fe55a43e4960a1e6ab"),
+  "catalogNumber": 1,
+  "menuIds": [
+    "ObjectId(\"6094105455a43e4960a1e6a9\")",
+    "ObjectId(\"6094481996346b1258a217bf\")"
+  ],
+  "hotelName": "Hotel Taj",
+  "__v": 0
+}
