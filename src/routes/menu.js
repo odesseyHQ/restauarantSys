@@ -1,7 +1,9 @@
 var express = require("express");
 var router = express.Router();
 var path = require("path");
-var Menu = require(path.join(__dirname, "..", "models", "Menu.js"));
+var mongoose = require("mongoose");
+var menus = require(path.join(__dirname, "..", "models", "Menu.js"));
+var Menu = mongoose.model("Menu");
 
 var success = {
   status: 201,

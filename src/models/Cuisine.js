@@ -1,11 +1,7 @@
-var mongoose = require('mongoose')
-
-
+var mongoose = require("mongoose");
 
 var cuisineSchema = new mongoose.Schema({
-    cuisineName: String,
-  });
+  cuisineName: String,
+});
 
-var Cuisine = mongoose.model('Cuisine',cuisineSchema)
-
-module.exports = Cuisine;
+mongoose.model("Cuisine", cuisineSchema);

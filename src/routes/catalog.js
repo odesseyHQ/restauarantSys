@@ -1,7 +1,9 @@
 var express = require("express");
 var router = express.Router();
+var mongoose = require("mongoose");
 var path = require("path");
-var Catalog = require(path.join(__dirname, "..", "models", "Catalog.js"));
+var catalogs = require(path.join(__dirname, "..", "models", "Catalog.js"));
+var Catalog = mongoose.model("Catalog");
 
 var success = {
   status: 201,
@@ -31,6 +33,12 @@ router.delete("/", (req, res) => {
     } else {
       res.send(err);
     }
+  });
+});
+
+router.get("/", (req, res) => {
+  Catalog.find((err, catalogData) => {
+    res.send(catalogData);
   });
 });
 

@@ -12,7 +12,6 @@ app.use(
 );
 app.use(express.static("public"));
 
-// Creating connection to Database 'RestauarantDB-2'
 mongoose.connect("mongodb://localhost:27017/RestaurantDB-2", {
   useUnifiedTopology: true,
   useNewUrlParser: true,
