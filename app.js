@@ -18,8 +18,7 @@ mongoose.connect("mongodb://localhost:27017/RestaurantDB-2", {
   useNewUrlParser: true,
 });
 
-const routes = require("./src/routes");
-app.use(routes);
+app.use(require("./src/routes"));
 
 app.listen(4000, () => {
   console.log("Server running on 4000");
