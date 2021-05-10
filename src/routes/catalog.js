@@ -15,6 +15,16 @@ var modified = {
   message: "Document modified",
 };
 
+router.get("/", (req, res) => {
+  Catalog.find((err, catalogData) => {
+    if (!err) {
+      res.send(catalogData);
+    } else {
+      res.send(err);
+    }
+  });
+});
+
 router.post("/", (req, res) => {
   const catalog = new Catalog(req.body);
   catalog.save((err) => {
@@ -36,9 +46,13 @@ router.delete("/", (req, res) => {
   });
 });
 
-router.get("/", (req, res) => {
-  Catalog.find((err, catalogData) => {
-    res.send(catalogData);
+router.get("/:catalogNumber", (req, res) => {
+  Catalog.findOne({ _id: req.params.catalogId }, (err, catalogData) => {
+    if (!err) {
+      res.send(catalogData);
+    } else {
+      res.send(err);
+    }
   });
 });
 

@@ -15,6 +15,16 @@ var modified = {
   message: "Document modified",
 };
 
+router.get("/", (req, res) => {
+  Menu.find((err, menuData) => {
+    if (!err) {
+      res.send(menuData);
+    } else {
+      res.send(err);
+    }
+  });
+});
+
 router.post("/", (req, res) => {
   const menu = new Menu(req.body);
   menu.save((err) => {
@@ -30,6 +40,16 @@ router.delete("/", (req, res) => {
   Menu.deleteMany((err) => {
     if (err) {
       res.send("Success");
+    } else {
+      res.send(err);
+    }
+  });
+});
+
+router.get("/:menuId", (req, res) => {
+  Menu.findOne({ _id: req.params.menuId }, (err, menuData) => {
+    if (!err) {
+      res.send(menuData);
     } else {
       res.send(err);
     }

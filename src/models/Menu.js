@@ -7,4 +7,6 @@ const menuSchema = new mongoose.Schema({
   dishIds: Array,
 });
 
-mongoose.model('Menu',menuSchema)
+mongoose.model("Menu", menuSchema);
+
+

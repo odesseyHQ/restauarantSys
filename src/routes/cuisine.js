@@ -15,6 +15,16 @@ var modified = {
   message: "Document modified",
 };
 
+router.get("/", (req, res) => {
+  Cuisine.find((err, cuisineData) => {
+    if (!err) {
+      res.send(cuisineData);
+    } else {
+      res.send(err);
+    }
+  });
+});
+
 router.post("/", (req, res) => {
   const cuisine = new Cuisine(req.body);
   cuisine.save((err) => {
@@ -30,6 +40,16 @@ router.delete("/", (req, res) => {
   Cuisine.deleteMany((err) => {
     if (err) {
       res.send("Success");
+    } else {
+      res.send(err);
+    }
+  });
+});
+
+router.get("/:cuisineId", (req, res) => {
+  Cuisine.findOne({ _id: req.params.cuisineId }, (err, cuisineData) => {
+    if (!err) {
+      res.send(cuisineData);
     } else {
       res.send(err);
     }

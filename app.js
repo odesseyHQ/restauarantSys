@@ -3,14 +3,13 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 
 const app = express();
-app.use(bodyParser.json());
+app.use(express.json());
 
 app.use(
-  bodyParser.urlencoded({
+  express.urlencoded({
     extended: true,
   })
 );
-app.use(express.static("public"));
 
 mongoose.connect("mongodb://localhost:27017/RestaurantDB-2", {
   useUnifiedTopology: true,
