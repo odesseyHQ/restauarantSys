@@ -1,9 +1,16 @@
 const express = require("express");
-const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
-
+const jsonParser = (...args) => {
+  let parser = express.json();
+  try {
+    return parser(...args);
+  } catch (err) {
+    console.log(err);
+  }
+};
 const app = express();
 app.use(express.json());
+// app.use(jsonParser);
 
 app.use(
   express.urlencoded({
