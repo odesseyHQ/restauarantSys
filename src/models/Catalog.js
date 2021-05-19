@@ -6,4 +6,5 @@ const catalogSchema = new mongoose.Schema({
   menuIds: Array,
 });
 
-mongoose.model("Catalog", catalogSchema);
+const Catalog = mongoose.model("Catalog", catalogSchema);
+module.exports = Catalog;

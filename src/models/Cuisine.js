@@ -4,4 +4,5 @@ var cuisineSchema = new mongoose.Schema({
   cuisineName: String,
 });
 
-mongoose.model("Cuisine", cuisineSchema);
+const Cuisine = mongoose.model("Cuisine", cuisineSchema);
+module.exports = Cuisine;

@@ -11,4 +11,5 @@ const dishSchema = new mongoose.Schema({
   variants: Array,
 });
 
-mongoose.model("Dish", dishSchema);
+const Dish = mongoose.model("Dish", dishSchema);
+module.exports = Dish;

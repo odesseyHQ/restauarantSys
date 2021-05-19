@@ -1,9 +1,9 @@
 var express = require("express");
 var router = express.Router();
-var path = require("path");
-var mongoose = require("mongoose");
-var dishes = require(path.join(__dirname, "..", "..", "models", "Dish.js"));
-var Dish = mongoose.model("Dish");
+var Dish = require("../../models/Dish");
+var errResponse = require("../../constant/ErrorData");
+const postSchema = require("../../validation/dish");
+const validateBody = require("../../middlewares/validator");
 
 var success = {
   status: 201,
@@ -18,20 +18,20 @@ var modified = {
 router.get("/", (req, res) => {
   Dish.find((err, dishData) => {
     if (!err) {
-      res.send(dishData);
+      return res.status(200).json(dishData);
     } else {
-      res.send(err);
+      return errResponse.errorMessage(501, res);
     }
   });
 });
 
-router.post("/", (req, res) => {
+router.post("/", validateBody(postSchema), (req, res) => {
   const dish = new Dish(req.body);
   dish.save((err) => {
     if (!err) {
-      res.json(success);
+      return res.status(201).json(success);
     } else {
-      res.send(err);
+      return errResponse.errorMessage(503, res);
     }
   });
 });
@@ -39,9 +39,9 @@ router.post("/", (req, res) => {
 router.delete("/", (req, res) => {
   Dish.deleteMany((err) => {
     if (err) {
-      res.send("Success");
+      return errResponse.errorMessage(505, res);
     } else {
-      res.send(err);
+      return res.send("scuucess");
     }
   });
 });
@@ -49,9 +49,9 @@ router.delete("/", (req, res) => {
 router.get("/:dishId", (req, res) => {
   Dish.findOne({ _id: req.params.dishId }, (err, dishData) => {
     if (!err) {
-      res.send(dishData);
+      return res.status(200).json(dishData);
     } else {
-      res.send(err);
+      return errResponse.errorMessage(501, res);
     }
   });
 });
@@ -63,9 +63,9 @@ router.patch("/:dishId", (req, res) => {
     }
     Dish.updateOne({ _id: req.params.dishId }, req.body, (err) => {
       if (!err) {
-        res.send(JSON.stringify(modified));
+        return res.status(204).json(modified);
       } else {
-        res.send(err);
+        return errResponse.errorMessage(503, res);
       }
     });
   });

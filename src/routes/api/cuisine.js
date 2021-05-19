@@ -1,16 +1,10 @@
 var express = require("express");
 var router = express.Router();
-var path = require("path");
-var mongoose = require("mongoose");
-var cuisines = require(path.join(
-  __dirname,
-  "..",
-  "..",
-  "models",
-  "Cuisine.js"
-));
-var Cuisine = mongoose.model("Cuisine");
-const auth = require(path.join(__dirname, "..", "auth.js"));
+var Cuisine = require("../../models/Cuisine");
+var errResponse = require("../../constant/ErrorData");
+const auth = require("../auth");
+const postSchema = require("../../validation/cuisine");
+const validateBody = require("../../middlewares/validator");
 
 var success = {
   status: 201,
@@ -25,20 +19,20 @@ var modified = {
 router.get("/", (req, res) => {
   Cuisine.find((err, cuisineData) => {
     if (!err) {
-      res.send(cuisineData);
+      return res.status(201).json(cuisineData);
     } else {
-      res.send(err);
+      return errResponse.errorMessage(501, res);
     }
   });
 });
 
-router.post("/", auth.authenticateToken, (req, res) => {
+router.post("/", validateBody(postSchema), (req, res) => {
   const cuisine = new Cuisine(req.body);
   cuisine.save((err) => {
     if (!err) {
-      res.send(JSON.stringify(success));
+      return res.status(201).json(success);
     } else {
-      res.send(err);
+      return errResponse.errorMessage(503, res);
     }
   });
 });
@@ -46,9 +40,9 @@ router.post("/", auth.authenticateToken, (req, res) => {
 router.delete("/", (req, res) => {
   Cuisine.deleteMany((err) => {
     if (err) {
-      res.send("Success");
+      return errResponse.errorMessage(505, res);
     } else {
-      res.send(err);
+      return res.send("scuucess");
     }
   });
 });
@@ -56,9 +50,9 @@ router.delete("/", (req, res) => {
 router.get("/:cuisineId", (req, res) => {
   Cuisine.findOne({ _id: req.params.cuisineId }, (err, cuisineData) => {
     if (!err) {
-      res.send(cuisineData);
+      return res.status(200).json(cuisineData);
     } else {
-      res.send(err);
+      return errResponse.errorMessage(501, res);
     }
   });
 });
@@ -66,9 +60,9 @@ router.get("/:cuisineId", (req, res) => {
 router.patch("/:cuisineId", (req, res) => {
   Cuisine.updateOne({ _id: req.params.cuisineId }, req.body, (err) => {
     if (!err) {
-      res.send(JSON.stringify(modified));
+      return res.status(204).json(modified);
     } else {
-      res.send(err);
+      return errResponse.errorMessage(503, res);
     }
   });
 });

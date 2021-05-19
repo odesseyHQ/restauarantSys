@@ -1,19 +1,20 @@
 var express = require("express");
 var router = express.Router();
-var path = require("path");
-var mongoose = require("mongoose");
-const { route } = require("./cuisine");
-var users = require(path.join(__dirname, "..", "..", "models", "User"));
-var User = mongoose.model("User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const auth = require("../auth");
-var rtokens = require(path.join(__dirname, "..", "..", "models", "Rtoken.js"));
-var Rtoken = mongoose.model("Rtoken");
+var Rtoken = require("../../models/Rtoken");
+var User = require("../../models/User");
+var errResponse = require("../../constant/ErrorData");
+const [createSchema, loginSchema] = require("../../validation/user");
+const validateBody = require("../../middlewares/validator");
 
-require("dotenv").config();
-
-router.post("/", async (req, res) => {
+router.post("/", validateBody(createSchema), async (req, res) => {
+  User.findOne({ mail: req.body.mail }, async (err, userData) => {
+    if (userData) {
+      return errResponse.errorMessage(404, res);
+    }
+  });
   try {
     req.body.password = await bcrypt.hash(req.body.password, 10);
     const user = new User(req.body);
@@ -21,18 +22,18 @@ router.post("/", async (req, res) => {
       if (!err) {
         res.status(201).json({ messaage: "Document created successfully" });
       } else {
-        res.status(401).json({ messaage: "failed" });
+        errResponse.errorMessage(503, res);
       }
     });
   } catch {
-    res.status(500).res.send();
+    errResponse.errorMessage(412, res);
   }
 });
 
-router.post("/login", async (req, res) => {
+router.post("/login", validateBody(loginSchema), async (req, res) => {
   User.findOne({ mail: req.body.mail }, async (err, user) => {
     if (user === null) {
-      return res.status(400).json({ messaage: "Cannot find user" });
+      return errResponse.errorMessage(407, res);
     }
     try {
       if (await bcrypt.compare(req.body.password, user.password)) {
@@ -42,37 +43,37 @@ router.post("/login", async (req, res) => {
         const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
         const rtoken = new Rtoken({ refreshToken: refreshToken });
         rtoken.save();
-        res.status(200).json({
+        res.status(201).json({
           accesToken: accessToken,
           refreshToken: refreshToken,
           messaage: "Logged in",
         });
       } else {
-        res.status(401).json({ messaage: "Invalid password" });
+        return errResponse.errorMessage(405, res);
       }
     } catch {
-      res.status(500).send();
+      return errResponse.errorMessage(503, res);
     }
   });
 });
 
-router.get("/", auth.authenticateToken, (req, res) => {
-  res.send("Verfied");
+router.get("/", (req, res) => {
+  errResponse.errorMessage(401, res);
 });
 
 router.post("/token", (req, res) => {
-  if (req.body.token == null)
-    return res.status(401).json({ message: "Token missing" });
+  if (req.body.token == null) {
+    return errResponse.errorMessage(403, res);
+  }
   Rtoken.findOne({ refreshToken: req.body.token }, (err, tokenData) => {
-    if (tokenData == null)
-      return res.status(401).json({ message: "Token does not exist" });
+    if (tokenData == null) return errResponse.errorMessage(415, res);
     jwt.verify(
       tokenData.refreshToken,
       process.env.REFRESH_TOKEN_SECRET,
       (err, user) => {
-        if (err) return res.status(401).json({ message: "Token invalid" });
+        if (err) return errResponse.errorMessage(414, res);
         const accessToken = auth.generateToken({ mail: user.mail });
-        res.json({ accessToken: accessToken });
+        return res.status(201).json({ accessToken: accessToken });
       }
     );
   });
@@ -81,10 +82,16 @@ router.post("/token", (req, res) => {
 router.delete("/logout", (req, res) => {
   Rtoken.findOne({ refreshToken: req.body.token }, (err, tokenData) => {
     if (tokenData == null) {
-      return res.status(401).json({ message: "Token does not exist" });
+      return errResponse.errorMessage(414, res);
     } else {
       Rtoken.deleteOne({ refreshToken: req.body.token }, (err) => {
-        return res.status(204).json({ message: "Deletd" });
+        if (!err) {
+          return res
+            .status(204)
+            .json({ message: "Token deleted successfully" });
+        } else {
+          return errResponse.errorMessage(505, res);
+        }
       });
     }
   });

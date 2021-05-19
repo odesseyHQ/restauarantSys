@@ -7,6 +7,5 @@ const menuSchema = new mongoose.Schema({
   dishIds: Array,
 });
 
-mongoose.model("Menu", menuSchema);
-
-
+const Menu = mongoose.model("Menu", menuSchema);
+module.exports = Menu;

@@ -1,15 +1,9 @@
 var express = require("express");
 var router = express.Router();
-var mongoose = require("mongoose");
-var path = require("path");
-var catalogs = require(path.join(
-  __dirname,
-  "..",
-  "..",
-  "models",
-  "Catalog.js"
-));
-var Catalog = mongoose.model("Catalog");
+var Catalog = require("../../models/Catalog");
+var errResponse = require("../../constant/ErrorData");
+const postSchema = require("../../validation/catalog");
+const validateBody = require("../../middlewares/validator");
 
 var success = {
   status: 201,
@@ -24,30 +18,30 @@ var modified = {
 router.get("/", (req, res) => {
   Catalog.find((err, catalogData) => {
     if (!err) {
-      res.send(catalogData);
+      return res.status(200).json(catalogData);
     } else {
-      res.send(err);
+      return errResponse.errorMessage(501, res);
     }
   });
 });
 
-router.post("/", (req, res) => {
+router.post("/", validateBody(postSchema), (req, res) => {
   const catalog = new Catalog(req.body);
-  catalog.save((err) => {
-    if (!err) {
-      res.send(JSON.stringify(success));
-    } else {
-      res.send(err);
-    }
-  });
+  // catalog.save((err) => {
+  //   if (!err) {
+  //     return res.status(201).json(success);
+  //   } else {
+  //     return errResponse.errorMessage(503, res);
+  //   }
+  // });
 });
 
 router.delete("/", (req, res) => {
   Catalog.deleteMany((err) => {
     if (err) {
-      res.send("Success");
+      return errResponse.errorMessage(505, res);
     } else {
-      res.send(err);
+      return res.send("scuucess");
     }
   });
 });
@@ -55,9 +49,9 @@ router.delete("/", (req, res) => {
 router.get("/:catalogNumber", (req, res) => {
   Catalog.findOne({ _id: req.params.catalogId }, (err, catalogData) => {
     if (!err) {
-      res.send(catalogData);
+      return res.status(200).json(catalogData);
     } else {
-      res.send(err);
+      return errResponse.errorMessage(501, res);
     }
   });
 });
@@ -69,9 +63,9 @@ router.patch("/:catalogNumber", (req, res) => {
     }
     Catalog.updateOne({ _id: req.params.catalogId }, req.body, (err) => {
       if (!err) {
-        res.send(JSON.stringify(modified));
+        return res.status(204).json(modified);
       } else {
-        res.send(err);
+        return errResponse.errorMessage(503, res);
       }
     });
   });

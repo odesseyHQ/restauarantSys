@@ -1,9 +1,9 @@
 var express = require("express");
 var router = express.Router();
-var path = require("path");
-var mongoose = require("mongoose");
-var menus = require(path.join(__dirname, "..", "..", "models", "Menu.js"));
-var Menu = mongoose.model("Menu");
+var Menu = require("../../models/Menu");
+var errResponse = require("../../constant/ErrorData");
+const postSchema = require("../../validation/menu");
+const validateBody = require("../../middlewares/validator");
 
 var success = {
   status: 201,
@@ -11,27 +11,27 @@ var success = {
 };
 
 var modified = {
-  status: 201,
+  status: 204,
   message: "Document modified",
 };
 
 router.get("/", (req, res) => {
   Menu.find((err, menuData) => {
     if (!err) {
-      res.send(menuData);
+      return res.status(200).json(menuData);
     } else {
-      res.send(err);
+      return errResponse.errorMessage(501, res);
     }
   });
 });
 
-router.post("/", (req, res) => {
+router.post("/", validateBody(postSchema), (req, res) => {
   const menu = new Menu(req.body);
   menu.save((err) => {
     if (!err) {
-      res.send(JSON.stringify(success));
+      return res.status(201).json(success);
     } else {
-      res.send(err);
+      return errResponse.errorMessage(503, res);
     }
   });
 });
@@ -39,9 +39,9 @@ router.post("/", (req, res) => {
 router.delete("/", (req, res) => {
   Menu.deleteMany((err) => {
     if (err) {
-      res.send("Success");
+      return errResponse.errorMessage(505, res);
     } else {
-      res.send(err);
+      return res.status(201).json({ message: "All documents deleted" });
     }
   });
 });
@@ -49,9 +49,9 @@ router.delete("/", (req, res) => {
 router.get("/:menuId", (req, res) => {
   Menu.findOne({ _id: req.params.menuId }, (err, menuData) => {
     if (!err) {
-      res.send(menuData);
+      return res.status(200).json(menuData);
     } else {
-      res.send(err);
+      return errResponse.errorMessage(501, res);
     }
   });
 });
@@ -63,9 +63,9 @@ router.patch("/:menuId", (req, res) => {
     }
     Menu.updateOne({ _id: req.params.menuId }, req.body, (err) => {
       if (!err) {
-        res.send(JSON.stringify(modified));
+        return res.status(204).json(modified);
       } else {
-        res.send(err);
+        return errResponse.errorMessage(503, res);
       }
     });
   });

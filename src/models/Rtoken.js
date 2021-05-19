@@ -4,4 +4,5 @@ const rtokenSchema = new mongoose.Schema({
   refreshToken: String,
 });
 
-mongoose.model("Rtoken", rtokenSchema);
+const Rtoken = mongoose.model("Rtoken", rtokenSchema);
+module.exports = Rtoken;
