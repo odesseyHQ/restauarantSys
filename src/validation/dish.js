@@ -10,4 +10,14 @@ const dishPostSchema = yup.object().shape({
   variants: yup.array().required(),
 });
 
-module.exports = dishPostSchema;
+const dishPatchSchema = yup.object().shape({
+  cuisineId: yup.string().optional(),
+  name: yup.string().optional(),
+  category: yup.string().optional(),
+  nonVeg: yup.boolean().optional(),
+  mainIngredient: yup.string().optional(),
+  preprationTime: yup.number().optional(),
+  variants: yup.array().optional(),
+});
+
+module.exports = [dishPostSchema, dishPatchSchema];

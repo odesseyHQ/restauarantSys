@@ -2,8 +2,8 @@ var express = require("express");
 var router = express.Router();
 var Catalog = require("../../models/Catalog");
 var errResponse = require("../../constant/ErrorData");
-const postSchema = require("../../validation/catalog");
-const validateBody = require("../../middlewares/validator");
+const [postSchema, patchSchema] = require("../../validation/catalog");
+const validator = require("../../middlewares/validator");
 
 var success = {
   status: 201,
@@ -25,15 +25,15 @@ router.get("/", (req, res) => {
   });
 });
 
-router.post("/", validateBody(postSchema), (req, res) => {
+router.post("/", validator.validatePostBody(postSchema), (req, res) => {
   const catalog = new Catalog(req.body);
-  // catalog.save((err) => {
-  //   if (!err) {
-  //     return res.status(201).json(success);
-  //   } else {
-  //     return errResponse.errorMessage(503, res);
-  //   }
-  // });
+  catalog.save((err) => {
+    if (!err) {
+      return res.status(201).json(success);
+    } else {
+      return errResponse.errorMessage(503, res);
+    }
+  });
 });
 
 router.delete("/", (req, res) => {
@@ -56,19 +56,23 @@ router.get("/:catalogNumber", (req, res) => {
   });
 });
 
-router.patch("/:catalogNumber", (req, res) => {
-  Catalog.findOne({ _id: req.params.catalogId }, (err, catalogData) => {
-    if (req.body.menuIds) {
-      req.body.menuIds = catalogData.menuIds.concat(req.body.menuIds);
-    }
-    Catalog.updateOne({ _id: req.params.catalogId }, req.body, (err) => {
-      if (!err) {
-        return res.status(204).json(modified);
-      } else {
-        return errResponse.errorMessage(503, res);
+router.patch(
+  "/:catalogNumber",
+  validator.validatePatchBody(patchSchema),
+  (req, res) => {
+    Catalog.findOne({ _id: req.params.catalogId }, (err, catalogData) => {
+      if (req.body.menuIds) {
+        req.body.menuIds = catalogData.menuIds.concat(req.body.menuIds);
       }
+      Catalog.updateOne({ _id: req.params.catalogId }, req.body, (err) => {
+        if (!err) {
+          return res.status(204).json(modified);
+        } else {
+          return errResponse.errorMessage(503, res);
+        }
+      });
     });
-  });
-});
+  }
+);
 
 module.exports = router;

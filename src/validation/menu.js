@@ -6,4 +6,9 @@ const menuPostSchema = yup.object().shape({
   dishIds: yup.array().required(),
 });
 
-module.exports = menuPostSchema;
+const menuPatchSchema = yup.object().shape({
+  cuisineId: yup.string().optional(),
+  name: yup.string().optional(),
+  dishIds: yup.array().optional(),
+});
+module.exports = [menuPostSchema, menuPatchSchema];

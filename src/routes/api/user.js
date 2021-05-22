@@ -2,14 +2,14 @@ var express = require("express");
 var router = express.Router();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const auth = require("../auth");
+const auth = require("../../middlewares/auth");
 var Rtoken = require("../../models/Rtoken");
 var User = require("../../models/User");
 var errResponse = require("../../constant/ErrorData");
 const [createSchema, loginSchema] = require("../../validation/user");
-const validateBody = require("../../middlewares/validator");
+const validator = require("../../middlewares/validator");
 
-router.post("/", validateBody(createSchema), async (req, res) => {
+router.post("/", validator.validatePostBody(createSchema), async (req, res) => {
   User.findOne({ mail: req.body.mail }, async (err, userData) => {
     if (userData) {
       return errResponse.errorMessage(404, res);
@@ -30,32 +30,36 @@ router.post("/", validateBody(createSchema), async (req, res) => {
   }
 });
 
-router.post("/login", validateBody(loginSchema), async (req, res) => {
-  User.findOne({ mail: req.body.mail }, async (err, user) => {
-    if (user === null) {
-      return errResponse.errorMessage(407, res);
-    }
-    try {
-      if (await bcrypt.compare(req.body.password, user.password)) {
-        const userMail = req.body.mail;
-        const user = { mail: userMail };
-        const accessToken = auth.generateToken(user);
-        const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
-        const rtoken = new Rtoken({ refreshToken: refreshToken });
-        rtoken.save();
-        res.status(201).json({
-          accesToken: accessToken,
-          refreshToken: refreshToken,
-          messaage: "Logged in",
-        });
-      } else {
-        return errResponse.errorMessage(405, res);
+router.post(
+  "/login",
+  validator.validatePostBody(loginSchema),
+  async (req, res) => {
+    User.findOne({ mail: req.body.mail }, async (err, user) => {
+      if (user === null) {
+        return errResponse.errorMessage(407, res);
       }
-    } catch {
-      return errResponse.errorMessage(503, res);
-    }
-  });
-});
+      try {
+        if (await bcrypt.compare(req.body.password, user.password)) {
+          const userMail = req.body.mail;
+          const user = { mail: userMail };
+          const accessToken = auth.generateToken(user);
+          const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
+          const rtoken = new Rtoken({ refreshToken: refreshToken });
+          rtoken.save();
+          res.status(201).json({
+            accesToken: accessToken,
+            refreshToken: refreshToken,
+            messaage: "Logged in",
+          });
+        } else {
+          return errResponse.errorMessage(405, res);
+        }
+      } catch {
+        return errResponse.errorMessage(503, res);
+      }
+    });
+  }
+);
 
 router.get("/", (req, res) => {
   errResponse.errorMessage(401, res);

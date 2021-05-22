@@ -121,7 +121,7 @@ function errorMessage(err, res) {
   ERROR_STATUS_ARRAY.find((c) => {
     if (c.status == err) {
       c["success"] = false;
-      res.status(err).json(c);
+      return res.status(err).json(c);
     }
   });
 }

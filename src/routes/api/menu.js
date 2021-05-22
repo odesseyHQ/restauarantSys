@@ -2,8 +2,8 @@ var express = require("express");
 var router = express.Router();
 var Menu = require("../../models/Menu");
 var errResponse = require("../../constant/ErrorData");
-const postSchema = require("../../validation/menu");
-const validateBody = require("../../middlewares/validator");
+const [postSchema, patchSchema] = require("../../validation/menu");
+const validator = require("../../middlewares/validator");
 
 var success = {
   status: 201,
@@ -25,7 +25,7 @@ router.get("/", (req, res) => {
   });
 });
 
-router.post("/", validateBody(postSchema), (req, res) => {
+router.post("/", validator.validatePostBody(postSchema), (req, res) => {
   const menu = new Menu(req.body);
   menu.save((err) => {
     if (!err) {
@@ -56,19 +56,23 @@ router.get("/:menuId", (req, res) => {
   });
 });
 
-router.patch("/:menuId", (req, res) => {
-  Menu.findOne({ _id: req.params.menuId }, (err, menuData) => {
-    if (req.body.dishIds) {
-      req.body.dishIds = menuData.dishIds.concat(req.body.dishIds);
-    }
-    Menu.updateOne({ _id: req.params.menuId }, req.body, (err) => {
-      if (!err) {
-        return res.status(204).json(modified);
-      } else {
-        return errResponse.errorMessage(503, res);
+router.patch(
+  "/:menuId",
+  validator.validatePatchBody(patchSchema),
+  (req, res) => {
+    Menu.findOne({ _id: req.params.menuId }, (err, menuData) => {
+      if (req.body.dishIds) {
+        req.body.dishIds = menuData.dishIds.concat(req.body.dishIds);
       }
+      Menu.updateOne({ _id: req.params.menuId }, req.body, (err) => {
+        if (!err) {
+          return res.status(204).json(modified);
+        } else {
+          return errResponse.errorMessage(503, res);
+        }
+      });
     });
-  });
-});
+  }
+);
 
 module.exports = router;

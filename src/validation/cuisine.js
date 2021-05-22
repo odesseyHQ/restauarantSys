@@ -4,4 +4,9 @@ const cuisineSchemaPost = yup.object().shape({
   cuisineName: yup.string().required(),
 });
 
-module.exports = cuisineSchemaPost;
+const cuisineSchemaPatch = yup.object().shape({
+  cuisineName: yup.string().optional(),
+  cuisineCountry: yup.string().optional(),
+});
+
+module.exports = [cuisineSchemaPost, cuisineSchemaPatch];

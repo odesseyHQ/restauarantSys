@@ -2,8 +2,8 @@ var express = require("express");
 var router = express.Router();
 var Dish = require("../../models/Dish");
 var errResponse = require("../../constant/ErrorData");
-const postSchema = require("../../validation/dish");
-const validateBody = require("../../middlewares/validator");
+const [postSchema, patchSchema] = require("../../validation/dish");
+const validator = require("../../middlewares/validator");
 
 var success = {
   status: 201,
@@ -25,7 +25,7 @@ router.get("/", (req, res) => {
   });
 });
 
-router.post("/", validateBody(postSchema), (req, res) => {
+router.post("/", validator.validatePostBody(postSchema), (req, res) => {
   const dish = new Dish(req.body);
   dish.save((err) => {
     if (!err) {
@@ -56,19 +56,23 @@ router.get("/:dishId", (req, res) => {
   });
 });
 
-router.patch("/:dishId", (req, res) => {
-  Dish.findOne({ _id: req.params.dishId }, (err, dishData) => {
-    if (req.body.variants) {
-      req.body.variants = dishData.variants.concat(req.body.variants);
-    }
-    Dish.updateOne({ _id: req.params.dishId }, req.body, (err) => {
-      if (!err) {
-        return res.status(204).json(modified);
-      } else {
-        return errResponse.errorMessage(503, res);
-      }
-    });
-  });
-});
+router.patch(
+  "/:dishId",
+  validator.validatePatchBody(patchSchema),
+  (req, res) => {
+    // Dish.findOne({ _id: req.params.dishId }, (err, dishData) => {
+    //   if (req.body.variants) {
+    //     req.body.variants = dishData.variants.concat(req.body.variants);
+    //   }
+    //   Dish.updateOne({ _id: req.params.dishId }, req.body, (err) => {
+    //     if (!err) {
+    //       return res.status(204).json(modified);
+    //     } else {
+    //       return errResponse.errorMessage(503, res);
+    //     }
+    //   });
+    // });
+  }
+);
 
 module.exports = router;
