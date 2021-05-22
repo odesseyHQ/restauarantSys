@@ -2,7 +2,7 @@ var express = require("express");
 var router = express.Router();
 var Cuisine = require("../../models/Cuisine");
 var errResponse = require("../../constant/ErrorData");
-const auth = require("../../middlewares/auth");
+const auth = require("../../middlewares/authenticator");
 const [postSchema, patchSchema] = require("../../validation/cuisine");
 const validator = require("../../middlewares/validator");
 
