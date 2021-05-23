@@ -1,7 +1,7 @@
 // 40X - Client Side Error
 // 50X - Server Side Error
 
-var ERROR_STATUS_ARRAY = [
+const ERROR_STATUS_ARRAY = [
   {
     status: "401",
     message: "userId or privateKey is wrong.",
@@ -115,13 +115,4 @@ var ERROR_STATUS_ARRAY = [
   },
 ];
 
-module.exports = { errorMessage };
-
-function errorMessage(err, res) {
-  ERROR_STATUS_ARRAY.find((c) => {
-    if (c.status == err) {
-      c["success"] = false;
-      return res.status(err).json(c);
-    }
-  });
-}
+module.exports = ERROR_STATUS_ARRAY;
